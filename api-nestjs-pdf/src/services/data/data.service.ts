@@ -17,7 +17,16 @@ export class DataService {
         return (pdf(fileBuffer).then(function(data) {
             return data.numrender;
         }).catch(function(error) {
-            return error
+            return error;
+        }));
+    }
+
+    getInfoPdf = async (fileBuffer: string) => {
+        const pdf = require('pdf-parse');
+        return (pdf(fileBuffer).then(function(data) {
+            return data.info;
+        }).catch(function(error) {
+            return error;
         }));
     }
 }
