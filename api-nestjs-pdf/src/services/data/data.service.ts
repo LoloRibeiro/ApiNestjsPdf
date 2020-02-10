@@ -8,7 +8,16 @@ export class DataService {
         return (pdf(fileBuffer).then(function(data) {
             return data.text;
         }).catch(function(error) {
-            return (error);
+            return error;
         }));
     };
+
+    getNumPagePdf = async (fileBuffer: string) => {
+        const pdf = require('pdf-parse');
+        return (pdf(fileBuffer).then(function(data) {
+            return data.numrender;
+        }).catch(function(error) {
+            return error
+        }));
+    }
 }
