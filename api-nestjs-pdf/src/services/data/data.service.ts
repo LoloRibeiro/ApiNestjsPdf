@@ -1,34 +1,70 @@
 import { Injectable, HttpException } from '@nestjs/common';
 const pdf = require('pdf-parse');
+import {PDFExtract, PDFExtractOptions, PDFExtractResult} from 'pdf.js-extract';
+import { CvService } from 'src/services/cv/cv.service';
 
 
 @Injectable()
 export class DataService {
 
-    // service which take a buffer (string) in parameter and return the text of the pdf
-    getTextFromPdf = async (fileBuffer: string) => {
-        return (pdf(fileBuffer).then(function(data) {
-            return data.text;
-        }).catch(function(error) {
-            return null;
-        }));
-    };
+    constructor( private readonly cvService: CvService) {}
 
-    // service which take a buffer (string) in parameter and return the number of page
-    getNumPagePdf = async (fileBuffer: string) => {
-        return (pdf(fileBuffer).then(function(data) {
-            return data.numrender;
+    /**
+     * Return Value Type: array[]
+     * Function : return the text of the pdf
+     * Error code : null
+     * Sucess code : 200
+     */
+    getTextFromPdf = async (filePath: string) => {
+        let text = [];
+        const pdfExtract = new PDFExtract();
+        const options: PDFExtractOptions = {};
+        return (pdfExtract.extract(filePath, options)
+        .then(async data => {
+            data = await this.cvService.parsePdfInfo(data);
+            data.pages.forEach(element => {
+                element.content.forEach(e => {
+                    text.push(e.str);
+                });
+            })
+            return(text);
         }).catch(function(error) {
-            return null;
+                return null;
+            }));
+        };
+
+     /**
+     * Return Value Type: number
+     * Function : return the number of page in a pdf
+     * Error code : null
+     * Sucess code : 200
+     */
+    getNumPagePdf = async (filePath: string) => {
+        const pdfExtract = new PDFExtract();
+        const options: PDFExtractOptions = {};
+        return (pdfExtract.extract(filePath, options)
+        .then(async data => {
+            return(data.pages.length);
+        }).catch(function(error) {
+                return null;
         }));
     }
 
-    // service which take a buffer (string) in parameter and return some information of pdf
-    getInfoPdf = async (fileBuffer: string) => {
-        return (pdf(fileBuffer).then(function(data) {
-            return data.info;
+
+     /**
+     * Return Value Type: array[]
+     * Function : return some information about the pdf (PDFFormatVersion, Creator, Author, Title)
+     * Error code : null
+     * Sucess code : 200
+     */
+    getInfoPdf = async (filePath: string) => {
+        const pdfExtract = new PDFExtract();
+        const options: PDFExtractOptions = {};
+        return (pdfExtract.extract(filePath, options)
+        .then(async data => {
+            return(data.meta.info);
         }).catch(function(error) {
-            return null;
+                return null;
         }));
     }
 }
