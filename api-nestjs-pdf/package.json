@@ -22,11 +22,14 @@
   "dependencies": {
     "@nestjs/common": "^6.10.14",
     "@nestjs/core": "^6.10.14",
-    "@nestjs/platform-express": "^6.10.14",
+    "@nestjs/platform-express": "^6.11.7",
     "pdf-parse": "^1.1.1",
+    "pdfreader": "^1.0.6",
     "reflect-metadata": "^0.1.13",
+    "resume-parser": "^1.1.0",
     "rimraf": "^3.0.0",
-    "rxjs": "^6.5.4"
+    "rxjs": "^6.5.4",
+    "simple-resume-parser": "^1.1.8"
   },
   "devDependencies": {
     "@nestjs/cli": "^6.13.2",
